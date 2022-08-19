@@ -1,0 +1,161 @@
+syntax = "proto3";
+
+import "google/protobuf/timestamp.proto";
+
+package proto;
+option go_package = "github.com/go-rfe/gpwd/internal/proto";
+
+message Status {
+  bool Synced = 1;
+  bool Deleted = 2;
+}
+
+message Secret {
+  string ID = 1;
+  bytes Data = 2;
+  map<string, string> Labels = 3;
+
+  google.protobuf.Timestamp CreatedAt = 4;
+  google.protobuf.Timestamp UpdatedAt = 5;
+  google.protobuf.Timestamp DeletedAt = 6;
+
+  Status status = 7;
+}
+
+message CreateSecretRequest {
+  Secret secret = 1;
+}
+
+message CreateSecretResponse {
+  string id = 1;
+  string error = 2;
+}
+
+message ListSecretsRequest {}
+
+message ListSecretsResponse {
+  repeated Secret secrets = 1;
+}
+
+message GetSecretRequest {
+  string id = 1;
+}
+
+message GetSecretResponse {
+  Secret secret = 1;
+  string error = 2;
+}
+
+message UpdateSecretRequest {
+  Secret secret = 1;
+}
+
+message UpdateSecretResponse {
+  string id = 1;
+  string error = 2;
+}
+
+message DeleteSecretRequest {
+  Secret secret = 1;
+}
+
+message DeleteSecretResponse {
+  string error = 1;
+}
+
+service Secrets {
+  rpc CreateSecret (CreateSecretRequest) returns (CreateSecretResponse) {}
+  rpc ListSecrets (ListSecretsRequest) returns (ListSecretsResponse) {}
+  rpc GetSecret (GetSecretRequest) returns (GetSecretResponse) {}
+  rpc UpdateSecret (UpdateSecretRequest) returns (UpdateSecretResponse) {}
+  rpc DeleteSecret (DeleteSecretRequest) returns (DeleteSecretResponse) {}
+}
+
+message Account {
+  string ID = 1;
+  string ServerAddress = 2;
+  string UserName = 3;
+  bytes UserPassword = 4;
+  bool Registered = 5;
+}
+
+message CreateAccountRequest {
+  Account account = 1;
+}
+
+message CreateAccountResponse {
+  string id = 1;
+  string error = 2;
+}
+
+message GetAccountRequest {}
+
+message GetAccountResponse {
+  Account account = 1;
+  string error = 2;
+}
+
+message UpdateAccountRequest {
+  Account account = 1;
+}
+
+message UpdateAccountResponse {
+  string error = 2;
+}
+
+message DeleteAccountRequest {}
+
+message DeleteAccountResponse {
+  string error = 1;
+}
+
+service Accounts {
+  rpc CreateAccount (CreateAccountRequest) returns (CreateAccountResponse) {}
+  rpc GetAccount (GetAccountRequest) returns (GetAccountResponse) {}
+  rpc UpdateAccount (UpdateAccountRequest) returns (UpdateAccountResponse) {}
+  rpc DeleteAccount (DeleteAccountRequest) returns (DeleteAccountResponse) {}
+}
+
+message Auth {
+  string username = 1;
+  bytes password = 2;
+}
+
+message RegisterAccountRequest {
+  Auth auth = 1;
+}
+
+message RegisterAccountResponse {
+  string token = 1;
+  string error = 2;
+}
+
+message LoginRequest {
+  Auth auth = 1;
+}
+
+message LoginResponse {
+  string token = 1;
+  string error = 2;
+}
+
+service Login {
+  rpc RegisterAccount (RegisterAccountRequest) returns (RegisterAccountResponse) {}
+  rpc Login (LoginRequest) returns (LoginResponse) {}
+}
+
+message SyncRequest {
+  Secret secret = 1;
+}
+
+message SyncResponse {
+  string error = 1;
+  Secret secret = 2;
+}
+
+service Sync {
+  rpc Sync (SyncRequest) returns (stream SyncResponse) {}
+  rpc SyncDeleted (stream SyncRequest) returns (SyncResponse) {}
+  rpc SyncUpdated (stream SyncRequest) returns (SyncResponse) {}
+  rpc SyncCreated (stream SyncRequest) returns (SyncResponse) {}
+}
