@@ -1,0 +1,17 @@
+{
+  "signing": {
+    "default": {
+      "expiry": "26280h"
+    },
+    "profiles": {
+      "server": {
+        "usages": ["digital signature", "key encipherment", "server auth"],
+        "expiry": "26270h"
+      },
+      "client": {
+        "usages": ["signing", "client auth"],
+        "expiry": "26260h"
+      }
+    }
+  }
+}

@@ -1,0 +1,8 @@
+ALTER TABLE secrets
+ADD COLUMN created_at TEXT;
+
+ALTER TABLE secrets
+ADD COLUMN updated_at TEXT DEFAULT NULL;
+
+ALTER TABLE secrets
+ADD COLUMN deleted_at TEXT DEFAULT NULL;
